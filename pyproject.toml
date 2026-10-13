@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "git-ref-retention"
+version = "0.1.0"
+description = "Show which remaining Git refs retain large blobs before a proposed ref drop."
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Nripanka Das"}]
+dependencies = []
+
+[project.scripts]
+git-ref-retention = "git_ref_retention:main"
+
+[tool.setuptools]
+py-modules = ["git_ref_retention"]
