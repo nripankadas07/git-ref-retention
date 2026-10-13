@@ -1,0 +1,28 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.10', '3.12', '3.14']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m unittest -v
+      - run: python -m compileall -q .
+      - name: Build and exercise installed command outside source tree
+        run: |
+          python -m pip wheel --no-deps --wheel-dir /tmp/wheels .
+          python -m venv /tmp/installed-tool
+          /tmp/installed-tool/bin/python -m pip install --no-deps /tmp/wheels/*.whl
+          PATH="/tmp/installed-tool/bin:$PATH" /tmp/installed-tool/bin/python test_installed_cli.py
